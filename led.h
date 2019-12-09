@@ -12,8 +12,7 @@
 #include "std_types.h"
 #include "ledConfig.h"
 
-#define ON 0xFF
-#define OFF 0x00
+
 
 typedef enum En_LedNumber_t{
 	LED_0,

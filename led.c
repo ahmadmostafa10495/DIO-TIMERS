@@ -7,6 +7,10 @@
 
 #include "led.h"
 
+
+#define ON 0xFF
+#define OFF 0x00
+
 /**
  * Description: Initialize the LED_x (where x 0, 1, 2, 3) as output
  * @param led_id: The led to be initialized and it takes

@@ -120,16 +120,16 @@ gpioPortRead(uint8 port)
 	switch (port)
 	{
 		case GPIOA:
-		return PORTA_DATA;
+		return PORTA_PIN;
 		break;
 		case GPIOB:
-		return PORTB_DATA;
+		return PORTB_PIN;
 		break;
 		case GPIOC:
-		return PORTC_DATA;
+		return PORTC_PIN;
 		break;
 		case GPIOD:
-		return PORTD_DATA;
+		return PORTD_PIN;
 		break;
 	}
 }
@@ -326,16 +326,16 @@ gpioPinRead(uint8 port, uint8 pin)
 	switch (port)
 	{
 		case GPIOA:
-		return GET_BIT(PORTA_DATA,pin);
+		return GET_BIT(PORTA_PIN,pin);
 		break;
 		case GPIOB:
-		return GET_BIT(PORTB_DATA,pin);
+		return GET_BIT(PORTB_PIN,pin);
 		break;
 		case GPIOC:
-		return GET_BIT(PORTC_DATA,pin);
+		return GET_BIT(PORTC_PIN,pin);		//abdo portc-data
 		break;
 		case GPIOD:
-		return GET_BIT(PORTD_DATA,pin);
+		return GET_BIT(PORTD_PIN,pin);
 		break;
 	}
 }
@@ -488,16 +488,16 @@ gpioUpperNibbleRead(uint8 port)
 	switch (port)
 	{
 		case GPIOA:
-		return PORTA_DATA & 0xF0;
+		return PORTA_PIN & 0xF0;
 		break;
 		case GPIOB:
-		return PORTB_DATA & 0xF0;
+		return PORTB_PIN & 0xF0;
 		break;
 		case GPIOC:
-		return PORTC_DATA & 0xF0;
+		return PORTC_PIN & 0xF0;
 		break;
 		case GPIOD:
-		return PORTD_DATA & 0xF0;
+		return PORTD_PIN & 0xF0;
 		break;
 	}
 }
@@ -651,16 +651,16 @@ gpioLowerNibbleRead(uint8 port)
 	switch (port)
 	{
 		case GPIOA:
-		return PORTA_DATA & 0x0F;
+		return PORTA_PIN & 0x0F;
 		break;
 		case GPIOB:
-		return PORTB_DATA & 0x0F;
+		return PORTB_PIN & 0x0F;
 		break;
 		case GPIOC:
-		return PORTC_DATA & 0x0F;
+		return PORTC_PIN & 0x0F;
 		break;
 		case GPIOD:
-		return PORTC_DATA & 0x0F;
+		return PORTC_PIN & 0x0F;
 		break;
 	}
 }
