@@ -15,6 +15,7 @@
 #include "timers.h"
 #include "interrupt.h"
 #include "MotorDC.h"
+volatile uint16 speed;
 //#include <util/delay.h>
 //#define F_CPU 8000000UL
 int main(void)
@@ -24,7 +25,8 @@ int main(void)
 	MotorDC_Init(MOT_2);
 	MotorDC_Dir(MOT_1, FORWARD);
 	MotorDC_Dir(MOT_2, FORWARD);
-	timer1Init(T1_NORMAL_MODE,T1_OC1_DIS,T1_PRESCALER_1024,0,0,0,0,T1_POLLING);
+	sei();	
+	timer1Init(T1_NORMAL_MODE,T1_OC1_DIS,T1_PRESCALER_1024,0,0,0,0,T1_INTERRUPT_CMP_1A|T1_INTERRUPT_NORMAL);
 	/*Led_Init(LED_0);
 	
 	Led_Init(LED_3);
@@ -32,12 +34,16 @@ int main(void)
 	Led_On(LED_0);
 	pushButton_Init(BTN_0);*/
 	Led_Init(LED_0);
-	uint16 c = 5000, t = 1, speed = 10,  f=0;
-	
+	uint16 c = 5000, t = 1, f=0;
+	speed = 10;
 
 	uint8 counter = 0, onFlag = 0, value = 10;
+
+	MotorDC_Speed_PollingWithT1(speed);
+	timer1Start();
     while(1)
     {
+
 		if (speed == 90)
 		{
 			f=1;
@@ -47,7 +53,7 @@ int main(void)
 			f=0;
 		}
 		t++;
-		if (t==50)
+		if (t==50000)
 		{
 			if (f==0)
 			{
@@ -59,7 +65,7 @@ int main(void)
 			}
 			t=1;
 		}
-		MotorDC_Speed_PollingWithT1(speed);
+		//MotorDC_Speed_PollingWithT1(speed);
 		
 		
 		//timer0Delay_ms(1000);

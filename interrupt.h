@@ -2,7 +2,7 @@
  * interrupt.h
  *
  *  Created on: Dec 9, 2019
- *      Author: Ahmed Osama
+ *      Author: ahmad
  */
 
 #ifndef INTERRUPT_H_

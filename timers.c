@@ -9,6 +9,9 @@
 #include "timers.h"
 #include "MotorDC_CFG.h"
 #include "led.h"
+#include "interrupt.h"
+#include "MotorDC.h"
+extern uint16 speed;
 
 static En_timer0perscaler_t g_prescal0;
 static En_timer1perscaler_t g_prescal1;
@@ -191,7 +194,7 @@ void timer1Delay_ms(uint16 delay)
  * Description:
  * @param dutyCycle
  */
-void 
+/*void 
 timer1SwPWM(uint8 dutyCycle,uint8 freq)
 {
 	
@@ -232,35 +235,55 @@ timer1SwPWM(uint8 dutyCycle,uint8 freq)
 	while((TIFR&0x04)==0);
 	TIFR|=0x04;
 	timer1Stop();
-	
 
+}*/
+/**
+ * Description:
+ * @param dutyCycle
+ */
+void 
+timer1SwPWM(uint8 dutyCycle,uint8 freq)
+{
 	
 	
+	//uint16 tempTCCNT =TCNT1;
+	//uint16 tempTCCR =TCCR1;
+	//uint16 tempOCR =OCR1A;
+	uint32 x,y,z;
+	//TCNT1=		65537-(((16000000UL)/(freq*(1000UL))));
+	//	TCNT1=		65535-((16000000UL)/(freq*(1000UL)*8));
+	//TCNT1=64897;
+	x=(16000000UL)/(freq*(1000UL)*1024);
+	TCNT1=65536-x;
+	//				OCR1A=   ((((16000000UL)/(freq*(1000UL)*8))*dutyCycle)/100)+TCNT1;
+	//OCR1A=   ((((16000000UL)/(freq*(1000UL)))*dutyCycle)/100)+TCNT1;
+	//OCR1A=65408;
+	//OCR1A=65520;
+	y=dutyCycle*x;
+	z=y/100;
+	OCR1A=z+TCNT1;
 	
 	
-	/*//gpioPinWrite(MOTOR_OUT_1A_GPIO, MOTOR_OUT_1A_BIT, HIGH);
-	Led_On(LED_0);
-	timer1Delay_ms(1000);
-	//gpioPinWrite(MOTOR_OUT_1A_GPIO, MOTOR_OUT_1A_BIT, LOW);
-	Led_Off(LED_0);
-	timer1Delay_ms(1000);*/
+	/*gpioPinWrite(MOTOR_EN_1_GPIO, MOTOR_EN_1_BIT, HIGH);
+	gpioPinWrite(MOTOR_EN_2_GPIO, MOTOR_EN_2_BIT, HIGH);
+	Led_On(LED_0);*/
+	//gpioPinWrite(GPIOD, BIT4, HIGH);
+	//Led_On(LED_2);
+	//timer1Start();
 	
-	/*timer1Init(T1_NORMAL_MODE, T1_OC1_DIS, T1_PRESCALER_256, 0, (655 * dutyCycle), 0, 0, T1_POLLING);
-	timer1Set(13107);
-	timer1Start();
-	//gpioPinWrite(MOTOR_OUT_1A_GPIO, MOTOR_OUT_1A_BIT, HIGH);
-	//gpioPinWrite(MOTOR_OUT_2A_GPIO, MOTOR_OUT_2A_BIT, HIGH);
-	
-	while (!(TIFR&(1<<4)));
-	Led_Off(LED_0);
-	//gpioPinWrite(MOTOR_OUT_1A_GPIO, MOTOR_OUT_1A_BIT, LOW);
-	//gpioPinWrite(MOTOR_OUT_2A_GPIO, MOTOR_OUT_2A_BIT, LOW);
-	
-	while (!(TIFR&(1<<4)));
-	Led_On(LED_0);	
-	TIFR |= (TIFR&(1<<4));*/
+	//while((TIFR&0x10)==0);
+	//TIFR|=0x10;
+	//
+	//gpioPinWrite(GPIOD, BIT4, LOW);
+	//Led_Off(LED_2);
+	/*gpioPinWrite(MOTOR_EN_1_GPIO, MOTOR_EN_1_BIT, LOW);
+	gpioPinWrite(MOTOR_EN_2_GPIO, MOTOR_EN_2_BIT, LOW);
+	Led_Off(LED_0);*/
+	//while((TIFR&0x04)==0);
+	//TIFR|=0x04;
+	//timer1Stop();
+
 }
-
 
 
 
@@ -364,7 +387,21 @@ timer2Delay_us(uint32 delay)
 	timer2Stop();
 }
 
+ISR(TIMER1_OVF_vect)
+{	gpioPinWrite(MOTOR_EN_1_GPIO, MOTOR_EN_1_BIT, LOW);
+	gpioPinWrite(MOTOR_EN_2_GPIO, MOTOR_EN_2_BIT, LOW);
+	Led_Off(LED_0);
+	MotorDC_Speed_PollingWithT1(speed);
+	//timer1Start();
+	
+}
+ISR(TIMER1_COMPA_vect)
+{
+	gpioPinWrite(MOTOR_EN_1_GPIO, MOTOR_EN_1_BIT, HIGH);
+	gpioPinWrite(MOTOR_EN_2_GPIO, MOTOR_EN_2_BIT, HIGH);
+	Led_On(LED_0);	
 
+}
 
 
 	/*timer1Init(T1_NORMAL_MODE, T1_OC0_DIS, T1_PRESCALER_256, 0, (655 * dutyCycle), 0, 0, T1_POLLING);
